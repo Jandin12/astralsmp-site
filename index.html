@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Astral SMP</title>
+<meta name="description" content="Astral SMP — a quiet corner of the galaxy to build, survive, and explore together. Join at play.astralsmp.org">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="alternate icon" href="favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="assets/android-chrome-192x192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --violet:#7c3aed;
+    --purple:#a855f7;
+    --light-purple:#d8b4fe;
+    --bg-deep:#0a0714;
+    --bg-mid:#140b28;
+    --bg-card:#1a1030;
+    --text:#ece7f7;
+    --muted:#a79bc9;
+    --border:rgba(196,181,253,0.16);
+    --font-head:'Montserrat',-apple-system,'Segoe UI',sans-serif;
+    --font-body:'Inter',-apple-system,'Segoe UI',sans-serif;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+
+  html{scroll-behavior:smooth;}
+
+  body{
+    background:var(--bg-deep);
+    color:var(--text);
+    font-family:var(--font-body);
+    line-height:1.6;
+    overflow-x:hidden;
+    position:relative;
+  }
+
+  /* ---------- background layers ---------- */
+  #stars{
+    position:fixed;
+    inset:0;
+    width:100%;
+    height:100%;
+    z-index:-3;
+    background:linear-gradient(180deg,#0a0714 0%,#120a24 45%,#1b1036 100%);
+  }
+
+  .nebula-bg{
+    position:fixed;
+    inset:0;
+    z-index:-2;
+    pointer-events:none;
+    overflow:hidden;
+  }
+  .nebula-bg span{
+    position:absolute;
+    border-radius:50%;
+    filter:blur(90px);
+    opacity:0.35;
+    animation:drift 40s ease-in-out infinite alternate;
+  }
+  .nebula-bg span:nth-child(1){
+    width:520px;height:520px;
+    top:-10%;left:-8%;
+    background:radial-gradient(circle, var(--violet), transparent 70%);
+    animation-delay:0s;
+  }
+  .nebula-bg span:nth-child(2){
+    width:600px;height:600px;
+    top:20%;right:-15%;
+    background:radial-gradient(circle, var(--purple), transparent 70%);
+    animation-delay:-12s;
+  }
+  .nebula-bg span:nth-child(3){
+    width:420px;height:420px;
+    bottom:-5%;left:20%;
+    background:radial-gradient(circle, var(--light-purple), transparent 70%);
+    opacity:0.18;
+    animation-delay:-24s;
+  }
+  .nebula-bg span:nth-child(4){
+    width:380px;height:380px;
+    bottom:10%;right:10%;
+    background:radial-gradient(circle, var(--violet), transparent 70%);
+    opacity:0.22;
+    animation-delay:-6s;
+  }
+  @keyframes drift{
+    from{transform:translate(0,0) scale(1);}
+    to{transform:translate(40px,-30px) scale(1.08);}
+  }
+
+  .vignette{
+    position:fixed;
+    inset:0;
+    z-index:-1;
+    pointer-events:none;
+    background:radial-gradient(ellipse at 50% 0%, transparent 40%, rgba(10,7,20,0.6) 100%);
+  }
+
+  /* ---------- typography ---------- */
+  h1,h2,h3{font-family:var(--font-head);}
+
+  .gradient-text{
+    background:linear-gradient(90deg,#8b5cf6 0%, #a855f7 45%, #d8b4fe 100%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+  }
+
+  section{
+    padding:120px 24px;
+    max-width:1100px;
+    margin:0 auto;
+    position:relative;
+  }
+
+  .eyebrow{
+    display:inline-block;
+    font-size:13px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--light-purple);
+    font-weight:600;
+    margin-bottom:14px;
+  }
+
+  h2{
+    font-size:clamp(28px,4vw,42px);
+    font-weight:800;
+    margin-bottom:18px;
+    letter-spacing:-0.01em;
+  }
+
+  .section-lead{
+    color:var(--muted);
+    font-size:17px;
+    max-width:620px;
+    margin-bottom:56px;
+  }
+
+  /* ---------- nav ---------- */
+  header.nav{
+    position:fixed;
+    top:0;left:0;right:0;
+    z-index:50;
+    backdrop-filter:blur(14px);
+    background:rgba(10,7,20,0.55);
+    border-bottom:1px solid var(--border);
+  }
+  .nav-inner{
+    max-width:1100px;
+    margin:0 auto;
+    padding:16px 24px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    text-decoration:none;
+    color:var(--text);
+    font-family:var(--font-head);
+    font-weight:800;
+    font-size:18px;
+    letter-spacing:0.01em;
+  }
+  .brand svg{width:30px;height:30px;flex-shrink:0;}
+  .nav-links{
+    display:flex;
+    gap:32px;
+    list-style:none;
+  }
+  .nav-links a{
+    color:var(--muted);
+    text-decoration:none;
+    font-size:14.5px;
+    font-weight:500;
+    transition:color 0.2s;
+  }
+  .nav-links a:hover{color:var(--light-purple);}
+
+  .nav-right{display:flex;align-items:center;gap:16px;}
+
+  @media (max-width:760px){
+    .nav-links{display:none;}
+  }
+
+  /* ---------- buttons ---------- */
+  .btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    padding:13px 26px;
+    border-radius:10px;
+    font-family:var(--font-body);
+    font-weight:600;
+    font-size:14.5px;
+    text-decoration:none;
+    cursor:pointer;
+    border:1px solid transparent;
+    transition:transform 0.15s ease, box-shadow 0.15s ease, background 0.2s;
+    white-space:nowrap;
+  }
+  .btn-primary{
+    background:linear-gradient(90deg,var(--violet),var(--purple));
+    color:#fff;
+    box-shadow:0 8px 24px rgba(124,58,237,0.35);
+  }
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(124,58,237,0.45);}
+  .btn-ghost{
+    background:rgba(196,181,253,0.06);
+    border-color:var(--border);
+    color:var(--text);
+  }
+  .btn-ghost:hover{background:rgba(196,181,253,0.12);border-color:rgba(196,181,253,0.35);}
+  .btn-small{padding:9px 16px;font-size:13px;border-radius:8px;}
+
+  /* ---------- hero ---------- */
+  .hero{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding-top:120px;
+    max-width:900px;
+  }
+  .hero-emblem{
+    width:150px;height:150px;
+    margin-bottom:32px;
+    filter:drop-shadow(0 0 40px rgba(168,85,247,0.45));
+    animation:float 6s ease-in-out infinite;
+  }
+  @keyframes float{
+    0%,100%{transform:translateY(0);}
+    50%{transform:translateY(-14px);}
+  }
+  .hero-title{
+    font-size:clamp(48px,9vw,96px);
+    font-weight:900;
+    letter-spacing:-0.02em;
+    line-height:1.02;
+    margin-bottom:22px;
+  }
+  .hero-tagline{
+    font-size:clamp(16px,2vw,19px);
+    color:var(--muted);
+    max-width:560px;
+    margin:0 auto 40px;
+  }
+  .hero-actions{
+    display:flex;
+    gap:16px;
+    flex-wrap:wrap;
+    justify-content:center;
+    margin-bottom:64px;
+  }
+  .scroll-hint{
+    color:var(--muted);
+    font-size:22px;
+    animation:bob 2.2s ease-in-out infinite;
+    opacity:0.6;
+  }
+  @keyframes bob{
+    0%,100%{transform:translateY(0);opacity:0.4;}
+    50%{transform:translateY(8px);opacity:0.8;}
+  }
+
+  /* ---------- about / features ---------- */
+  .feature-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+    gap:20px;
+  }
+  .feature-card{
+    background:linear-gradient(180deg, var(--bg-card), rgba(26,16,48,0.4));
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:28px 24px;
+    transition:transform 0.2s ease, border-color 0.2s;
+  }
+  .feature-card:hover{
+    transform:translateY(-4px);
+    border-color:rgba(196,181,253,0.4);
+  }
+  .feature-card svg{
+    width:26px;height:26px;
+    color:var(--light-purple);
+    margin-bottom:16px;
+  }
+  .feature-card h3{
+    font-family:var(--font-head);
+    font-size:17px;
+    font-weight:700;
+    margin-bottom:8px;
+  }
+  .feature-card p{
+    color:var(--muted);
+    font-size:14.5px;
+  }
+
+  /* ---------- how to join ---------- */
+  .steps{
+    list-style:none;
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:28px;
+    counter-reset:step;
+    position:relative;
+  }
+  .steps li{
+    background:rgba(26,16,48,0.35);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:30px 24px;
+    position:relative;
+  }
+  .step-num{
+    width:38px;height:38px;
+    border-radius:50%;
+    background:linear-gradient(135deg,var(--violet),var(--purple));
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:var(--font-head);
+    font-weight:800;
+    font-size:15px;
+    color:#fff;
+    margin-bottom:18px;
+  }
+  .steps h3{
+    font-family:var(--font-head);
+    font-size:16px;
+    font-weight:700;
+    margin-bottom:8px;
+  }
+  .steps p{color:var(--muted);font-size:14.5px;}
+  @media (max-width:760px){
+    .steps{grid-template-columns:1fr;}
+  }
+
+  /* ---------- server info ---------- */
+  .info-cards{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+  }
+  @media (max-width:700px){
+    .info-cards{grid-template-columns:1fr;}
+  }
+  .info-card{
+    background:linear-gradient(160deg, rgba(124,58,237,0.14), rgba(26,16,48,0.5));
+    border:1px solid var(--border);
+    border-radius:18px;
+    padding:32px;
+  }
+  .info-card h3{
+    font-size:13px;
+    text-transform:uppercase;
+    letter-spacing:0.1em;
+    color:var(--light-purple);
+    font-weight:700;
+    margin-bottom:16px;
+  }
+  .info-value-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    background:rgba(10,7,20,0.5);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:14px 16px;
+    margin-bottom:14px;
+  }
+  .info-value-row code{
+    font-family:'SFMono-Regular',Consolas,monospace;
+    font-size:15.5px;
+    color:#fff;
+    letter-spacing:0.01em;
+  }
+  .info-card .info-desc{color:var(--muted);font-size:14px;}
+  .info-card .info-desc a{color:var(--light-purple);}
+
+  /* ---------- footer ---------- */
+  footer{
+    border-top:1px solid var(--border);
+    padding:48px 24px 40px;
+    text-align:center;
+  }
+  .footer-brand{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    font-family:var(--font-head);
+    font-weight:800;
+    font-size:16px;
+    margin-bottom:10px;
+  }
+  .footer-brand svg{width:22px;height:22px;}
+  footer p{color:var(--muted);font-size:13px;}
+
+  /* ---------- toast ---------- */
+  .toast{
+    position:fixed;
+    bottom:28px;
+    left:50%;
+    transform:translateX(-50%) translateY(20px);
+    background:linear-gradient(90deg,var(--violet),var(--purple));
+    color:#fff;
+    padding:12px 22px;
+    border-radius:10px;
+    font-size:14px;
+    font-weight:600;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity 0.25s ease, transform 0.25s ease;
+    z-index:100;
+    box-shadow:0 10px 30px rgba(0,0,0,0.4);
+  }
+  .toast.show{
+    opacity:1;
+    transform:translateX(-50%) translateY(0);
+  }
+</style>
+</head>
+<body>
+
+<canvas id="stars"></canvas>
+<div class="nebula-bg"><span></span><span></span><span></span><span></span></div>
+<div class="vignette"></div>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a href="#top" class="brand">
+      <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="navPlanet" cx="35%" cy="35%" r="70%">
+            <stop offset="0%" stop-color="#d8b4fe"/>
+            <stop offset="55%" stop-color="#a855f7"/>
+            <stop offset="100%" stop-color="#4c1d95"/>
+          </radialGradient>
+        </defs>
+        <path d="M2,32 A30,9 0 0 1 62,32" stroke="#d8b4fe" stroke-width="2" opacity="0.85" fill="none"/>
+        <path d="M10,32 A22,6 0 0 1 54,32" stroke="#a855f7" stroke-width="2" opacity="0.7" fill="none"/>
+        <circle cx="32" cy="32" r="15" fill="url(#navPlanet)"/>
+        <path d="M10,32 A22,6 0 0 0 54,32" stroke="#a855f7" stroke-width="2" opacity="0.7" fill="none"/>
+        <path d="M2,32 A30,9 0 0 0 62,32" stroke="#d8b4fe" stroke-width="2" opacity="0.85" fill="none"/>
+      </svg>
+      Astral SMP
+    </a>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#join">How to Join</a></li>
+      <li><a href="#server">Server Info</a></li>
+    </ul>
+    <div class="nav-right">
+      <button class="btn btn-primary btn-small" data-copy>Copy IP</button>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <section id="top" class="hero">
+    <div class="hero-emblem">
+      <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="heroPlanet" cx="35%" cy="32%" r="72%">
+            <stop offset="0%" stop-color="#e9d5ff"/>
+            <stop offset="45%" stop-color="#a855f7"/>
+            <stop offset="100%" stop-color="#4c1d95"/>
+          </radialGradient>
+        </defs>
+        <path d="M2,32 A30,9.5 0 0 1 62,32" stroke="#d8b4fe" stroke-width="2" opacity="0.9" fill="none"/>
+        <path d="M10,32 A22,6.5 0 0 1 54,32" stroke="#a855f7" stroke-width="2" opacity="0.75" fill="none"/>
+        <circle cx="32" cy="32" r="16" fill="url(#heroPlanet)"/>
+        <circle cx="26" cy="26" r="2" fill="#fff" opacity="0.5"/>
+        <path d="M10,32 A22,6.5 0 0 0 54,32" stroke="#a855f7" stroke-width="2" opacity="0.75" fill="none"/>
+        <path d="M2,32 A30,9.5 0 0 0 62,32" stroke="#d8b4fe" stroke-width="2" opacity="0.9" fill="none"/>
+      </svg>
+    </div>
+    <h1 class="hero-title gradient-text">ASTRAL SMP</h1>
+    <p class="hero-tagline">In a galaxy far, far away, there lies a magical, yet powerful server, awaiting for your arrival... Astral calls.</p>
+    <div class="hero-actions">
+      <button class="btn btn-primary" data-copy>Copy Server IP</button>
+      <a class="btn btn-ghost" href="https://map.astralsmp.org" target="_blank" rel="noopener">View Live Map</a>
+    </div>
+    <div class="scroll-hint">↓</div>
+  </section>
+
+  <section id="about">
+    <span class="eyebrow">About the server</span>
+    <h2>Welcome to <span class="gradient-text">Astral SMP</span></h2>
+    <p class="section-lead">A survival multiplayer server built for a friendly, yet very competitive community. Whether you want to build, grind, or PvP, there's a place for you.</p>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="9" width="18" height="11" rx="1.5"/><path d="M7 9V6a5 5 0 0 1 10 0v3"/></svg>
+        <h3>Survival, Semi-Vanilla</h3>
+        <p>Classic survival with a twist: each season gets a new plugin that completely changes the style of gameplay. From PowerGems to Infuse SMP, the server dynamically changes.</p>
+      </div>
+      <div class="feature-card">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><circle cx="17.5" cy="9.5" r="2.7"/><path d="M15.5 20a5 5 0 0 1 6.8-4.6"/></svg>
+        <h3>Friendly Community</h3>
+        <p>An active, welcoming player base and staff team who actually play on the server.</p>
+      </div>
+      <div class="feature-card">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>
+        <h3>Seasonal Events</h3>
+        <p>Regular community builds, mini-games, and events to keep every season interesting.</p>
+      </div>
+      <div class="feature-card">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2 3 7v6c0 5 4 8.5 9 9 5-.5 9-4 9-9V7l-9-5Z"/></svg>
+        <h3>Griefing Protected</h3>
+        <p>Land claims keep your builds safe, so you can focus on creating, not defending.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="join">
+    <span class="eyebrow">Getting started</span>
+    <h2>How to Join</h2>
+    <p class="section-lead">Up and running in under a minute — on Java or Bedrock.</p>
+    <ol class="steps">
+      <li>
+        <div class="step-num">1</div>
+        <h3>Pick your platform</h3>
+        <p>Astral SMP runs GeyserMC, so both Minecraft: Java Edition and Bedrock Edition (mobile, console, Windows) can join and play together.</p>
+      </li>
+      <li>
+        <div class="step-num">2</div>
+        <h3>Add the server</h3>
+        <p>Java: <strong>play.astralsmp.org</strong> (default port 25565). Bedrock: <strong>play.astralsmp.org</strong>, port <strong>19132</strong>.</p>
+      </li>
+      <li>
+        <div class="step-num">3</div>
+        <h3>Register &amp; log in</h3>
+        <p>The server is cracked — no premium account needed — and secured with an advanced password plugin. Register a password on your first join, then log in each visit after.</p>
+      </li>
+    </ol>
+  </section>
+
+  <section id="server">
+    <span class="eyebrow">Connect</span>
+    <h2>Server Info</h2>
+    <p class="section-lead">Everything you need to jump in.</p>
+    <div class="info-cards">
+      <div class="info-card">
+        <h3>Server IP</h3>
+        <div class="info-value-row">
+          <code>play.astralsmp.org</code>
+          <button class="btn btn-ghost btn-small" data-copy>Copy</button>
+        </div>
+        <p class="info-desc">Java Edition — add this as your server address.</p>
+      </div>
+      <div class="info-card">
+        <h3>Live Map</h3>
+        <div class="info-value-row">
+          <code>map.astralsmp.org</code>
+          <a class="btn btn-ghost btn-small" href="https://map.astralsmp.org" target="_blank" rel="noopener">Open ↗</a>
+        </div>
+        <p class="info-desc">Browse the world in real time at <a href="https://map.astralsmp.org" target="_blank" rel="noopener">map.astralsmp.org</a>.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="footer-brand">
+    <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M2,32 A30,9 0 0 1 62,32" stroke="#d8b4fe" stroke-width="2.5" opacity="0.85" fill="none"/>
+      <circle cx="32" cy="32" r="15" fill="#a855f7"/>
+      <path d="M2,32 A30,9 0 0 0 62,32" stroke="#d8b4fe" stroke-width="2.5" opacity="0.85" fill="none"/>
+    </svg>
+    <span class="gradient-text">Astral SMP</span>
+  </div>
+  <p>&copy; 2026 Astral SMP. Not affiliated with Mojang or Microsoft.</p>
+</footer>
+
+<div class="toast" id="toast">Copied play.astralsmp.org to clipboard</div>
+
+<script>
+  // ---------- starfield ----------
+  const canvas = document.getElementById('stars');
+  const ctx = canvas.getContext('2d');
+  let stars = [];
+  let shootingStars = [];
+  let w, h;
+
+  function resize(){
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = document.documentElement.scrollHeight;
+    buildStars();
+  }
+
+  function buildStars(){
+    const count = Math.floor((w * Math.min(h, window.innerHeight * 2.2)) / 6000);
+    stars = [];
+    for(let i=0;i<count;i++){
+      stars.push({
+        x: Math.random() * w,
+        y: Math.random() * Math.min(h, window.innerHeight * 2.2),
+        r: Math.random() * 1.3 + 0.3,
+        baseAlpha: Math.random() * 0.6 + 0.3,
+        speed: Math.random() * 0.02 + 0.005,
+        phase: Math.random() * Math.PI * 2,
+        hue: Math.random() > 0.75 ? 'purple' : 'white'
+      });
+    }
+  }
+
+  function maybeSpawnShootingStar(){
+    if(Math.random() < 0.006 && shootingStars.length < 2){
+      const startX = Math.random() * w * 0.6;
+      const startY = Math.random() * (window.innerHeight * 0.5);
+      shootingStars.push({
+        x: startX, y: startY,
+        len: 80 + Math.random()*60,
+        speed: 9 + Math.random()*5,
+        angle: Math.PI/5,
+        life: 1
+      });
+    }
+  }
+
+  let t = 0;
+  function draw(){
+    t += 1;
+    ctx.clearRect(0,0,w,h);
+    for(const s of stars){
+      const a = s.baseAlpha + Math.sin(t*s.speed + s.phase) * 0.25;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+      ctx.fillStyle = s.hue === 'purple'
+        ? `rgba(216,180,254,${Math.max(a,0)})`
+        : `rgba(255,255,255,${Math.max(a,0)})`;
+      ctx.fill();
+    }
+
+    maybeSpawnShootingStar();
+    shootingStars.forEach(ss => {
+      const dx = Math.cos(ss.angle) * ss.speed;
+      const dy = Math.sin(ss.angle) * ss.speed;
+      ss.x += dx; ss.y += dy; ss.life -= 0.02;
+      const grad = ctx.createLinearGradient(ss.x, ss.y, ss.x - dx*ss.len/ss.speed, ss.y - dy*ss.len/ss.speed);
+      grad.addColorStop(0, `rgba(255,255,255,${Math.max(ss.life,0)})`);
+      grad.addColorStop(1, 'rgba(216,180,254,0)');
+      ctx.strokeStyle = grad;
+      ctx.lineWidth = 1.6;
+      ctx.beginPath();
+      ctx.moveTo(ss.x, ss.y);
+      ctx.lineTo(ss.x - dx*ss.len/ss.speed, ss.y - dy*ss.len/ss.speed);
+      ctx.stroke();
+    });
+    shootingStars = shootingStars.filter(ss => ss.life > 0 && ss.y < h);
+
+    requestAnimationFrame(draw);
+  }
+
+  window.addEventListener('resize', resize);
+  resize();
+  draw();
+
+  // ---------- copy to clipboard ----------
+  const toast = document.getElementById('toast');
+  let toastTimer;
+  function showToast(){
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(()=> toast.classList.remove('show'), 2200);
+  }
+  function copyIp(){
+    const ip = 'play.astralsmp.org';
+    if(navigator.clipboard){
+      navigator.clipboard.writeText(ip).then(showToast).catch(()=>fallbackCopy(ip));
+    } else {
+      fallbackCopy(ip);
+    }
+  }
+  function fallbackCopy(text){
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    try{ document.execCommand('copy'); showToast(); }catch(e){}
+    document.body.removeChild(ta);
+  }
+  document.querySelectorAll('[data-copy]').forEach(btn => {
+    btn.addEventListener('click', copyIp);
+  });
+</script>
+
+</body>
+</html>
