@@ -411,6 +411,8 @@
   .info-value-row{
     display:flex;
     align-items:center;
+    flex-wrap:wrap;
+    row-gap:10px;
     justify-content:space-between;
     gap:12px;
     background:rgba(10,7,20,0.5);
@@ -419,11 +421,22 @@
     padding:14px 16px;
     margin-bottom:14px;
   }
+  .info-value-row > div{
+    min-width:0;
+    flex:1 1 140px;
+  }
+  .info-value-row .btn{
+    flex-shrink:0;
+  }
   .info-value-row code{
     font-family:'SFMono-Regular',Consolas,monospace;
     font-size:15.5px;
     color:#fff;
     letter-spacing:0.01em;
+    word-break:break-all;
+    overflow-wrap:anywhere;
+    display:inline-block;
+    max-width:100%;
   }
   .info-card .info-desc{color:var(--muted);font-size:14px;}
   .info-card .info-desc a{color:var(--light-purple);}
