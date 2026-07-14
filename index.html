@@ -404,6 +404,62 @@
     margin-bottom:18px;
   }
   .footer-links .footer-discord{margin-bottom:0;}
+
+  /* ---------- discord widget section ---------- */
+  .discord-widget-wrap{
+    display:flex;
+    flex-wrap:wrap;
+    background:linear-gradient(160deg, rgba(124,58,237,0.14), rgba(26,16,48,0.5));
+    border:1px solid var(--border);
+    border-radius:18px;
+    overflow:hidden;
+    max-width:760px;
+  }
+  .discord-widget-frame{
+    border:0;
+    display:block;
+    width:350px;
+    max-width:100%;
+    height:500px;
+    background:rgba(10,7,20,0.5);
+    flex-shrink:0;
+  }
+  .discord-widget-panel{
+    display:flex;
+    flex-direction:column;
+    flex:1;
+    min-width:240px;
+    padding:32px 28px;
+  }
+  .discord-widget-panel h3{
+    font-family:var(--font-head);
+    font-size:20px;
+    font-weight:800;
+    margin-bottom:16px;
+  }
+  .discord-widget-list{
+    list-style:none;
+    color:var(--muted);
+    font-size:15px;
+    line-height:1.9;
+    margin-bottom:20px;
+  }
+  .discord-widget-list li::before{
+    content:"・";
+    color:var(--light-purple);
+  }
+  .discord-widget-more{
+    color:var(--muted);
+    font-size:14px;
+    margin-bottom:24px;
+  }
+  .discord-widget-panel .btn{
+    margin-top:auto;
+    align-self:flex-start;
+  }
+  @media (max-width:600px){
+    .discord-widget-frame{width:100%;height:320px;}
+  }
   .info-card{
     background:linear-gradient(160deg, rgba(124,58,237,0.14), rgba(26,16,48,0.5));
     border:1px solid var(--border);
@@ -529,6 +585,7 @@
     </a>
     <ul class="nav-links">
       <li><a href="#about">About</a></li>
+      <li><a href="#community">Community</a></li>
       <li><a href="#join">How to Join</a></li>
       <li><a href="#server">Server Info</a></li>
       <li><a href="https://store.astralsmp.org" target="_blank" rel="noopener">Store</a></li>
@@ -596,6 +653,26 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2 3 7v6c0 5 4 8.5 9 9 5-.5 9-4 9-9V7l-9-5Z"/></svg>
         <h3>Griefing Protected</h3>
         <p>Land claims keep your builds safe, so you can focus on creating, not defending.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="community">
+    <span class="eyebrow">Community</span>
+    <h2>Join the <span class="gradient-text">Discord</span></h2>
+    <p class="section-lead">See who's online and hop into the conversation before you even log in.</p>
+    <div class="discord-widget-wrap">
+      <iframe class="discord-widget-frame" src="https://discord.com/widget?id=1444132281760612495&theme=dark" allowtransparency="true" title="Astral SMP Discord widget" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
+      <div class="discord-widget-panel">
+        <h3>Let's talk!</h3>
+        <ul class="discord-widget-list">
+          <li>Meet other players</li>
+          <li>Ask questions</li>
+          <li>Get notified about updates</li>
+          <li>Give feedback</li>
+        </ul>
+        <p class="discord-widget-more">&amp; more</p>
+        <a class="btn btn-primary" href="https://discord.gg/xyUBXWc2x" target="_blank" rel="noopener">Join</a>
       </div>
     </div>
   </section>
